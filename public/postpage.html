@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POST</title>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <!-- Jquery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"></script>
+
+  <!-- compiled and minified JS (materialize) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<!-- manual stylesheet -->
+<link rel="stylesheet" href="./style/mainstyle.css">
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-app.js"></script>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-analytics.js"></script>
+
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyBtHxCNZIAHmUVz6ssjT-TmpHdavV8079E",
+      authDomain: "raiseyourvoice-d0195.firebaseapp.com",
+      databaseURL: "https://raiseyourvoice-d0195.firebaseio.com",
+      projectId: "raiseyourvoice-d0195",
+      storageBucket: "raiseyourvoice-d0195.appspot.com",
+      messagingSenderId: "928499525808",
+      appId: "1:928499525808:web:8a56ff6021f440d48f3375",
+      measurementId: "G-ZYWLZWDYKR"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    //update firestore settings
+    // db.settings({timestampsInSnapshots: true});
+    firebase.analytics();
+  </script>
+
+
+  <script>
+    var userEmail = ""
+    //########################################################################################
+    //                        AUTHENTICATION
+    //########################################################################################
+    function login() {
+      email = document.getElementById("loginEmail").value;
+      password = document.getElementById("loginPass").value;
+      firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ...
+        alert(errorMessage);
+      });
+    }
+    firebase.auth().onAuthStateChanged(function (user) {
+      if (user) {
+        // User is signed in.
+        userEmail = user.email;
+        document.getElementById("showonlogout").style.display = "none";
+        document.getElementById("showonlogin").style.display = "block";
+        displayPosts();
+
+        // ...
+      } else {
+        // User is signed out.
+        // ...
+        document.getElementById("showonlogout").style.display = "block";
+        document.getElementById("showonlogin").style.display = "none";
+      }
+    });
+    //########################################################################################
+    //                      POST IN DATABASE
+    //########################################################################################
+    function post() {
+      today = new Date();
+      console.log(today.getFullYear().toString() + (today.getMonth() + 1).toString() + today.getDate().toString() + today.getHours().toString() + today.getMinutes().toString() + today.getSeconds().toString());
+
+      currentTime = today.getFullYear().toString() + (today.getMonth() + 1).toString() + today.getDate().toString() + today.getHours().toString() + today.getMinutes().toString() + today.getSeconds().toString();
+      selEle = document.getElementById("posttext").value;
+
+      if (selEle.length) {
+        console.log(selEle);
+        // Add a new document in collection "cities"
+        document.getElementById("submitbutton").classList.add("disabled");
+        db.collection("posts").doc().set({
+          post: selEle,
+          time: currentTime,
+          user: userEmail,
+          display: "1"
+        })
+          .then(function () {
+            console.log("Document successfully written!");
+            alert("posted!");
+            window.location = "postpage.html"
+          })
+          .catch(function (error) {
+            console.error("Error writing document: ", error);
+          });
+      }
+      else {
+        alert("please enter some text.")
+      }
+    }
+
+
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('.sidenav').sidenav();
+      $('.collapsible').collapsible();
+      $('.fixed-action-btn').floatingActionButton();
+    });
+  </script>
+
+</head>
+
+<body>
+  <!-- ###########################################################################################
+                                NAVBAR
+################################################################################################-->
+  <nav>
+    <div class="nav-wrapper light-blue lighten-2">
+      <a href="#!" class="brand-logo">Post</a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#">Post</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-demo">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="#">Post</a></li>
+  </ul>
+
+
+
+  <!-- *************************************************************************************************
+                                      POSTS
+****************************************************************************************************** -->
+
+  <div class="container" id="showonlogout">
+    <div class="row center">
+      <h4>Login</h4>
+    </div>
+    <div class="row">
+      <div class="col s12 m8 l6 push-m2 push-l3">
+        <div class="row">
+          <div class="input-field">
+            <input id="loginEmail" type="email" class="validate">
+            <label for="loginEmail">Email</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field">
+            <input id="loginPass" type="password" class="validate">
+            <label for="loginPass">Password</label>
+          </div>
+        </div>
+        <div class="row center">
+          <a class="waves-effect waves-light btn" onclick="login()">LOGIN</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container center" id="showonlogin">
+    <div class="row">
+      <textarea class="col s12 m8 l8 push-m2 push-l2 input-field" name="post" id="posttext"
+        placeholder="Write something..." style="min-height: 200px;" spellcheck="true"></textarea>
+    </div>
+    <a class="waves-effect waves-light btn" id="submitbutton" onclick="post()">POST</a>
+
+    <!-- ##############################################################################
+                                USER's POSTS
+    ################################################################################### -->
+    <div class="userposts center">
+      <h4>Your Posts</h4>
+      <div class="row">
+        <div class="col s12 m8 l10 push-m2 push-l1" id="postsarea" style="min-height: 200px;">
+          <!-- ######################################
+                        PoSTS FORM JS
+            ########################################### -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 
+  <div class="container">
+    <div class="row">
+      <div class="col s12 m8 l10 push-m2 push-l1" id="postsarea" style="min-height: 200px;">
+        <ul class="collapsible" style="padding: 0px;">
+          <li>
+            <div class="collapsible-header" style="padding: 0px;">
+              <div class="card light-blue lighten-2 white-text">
+                <div class="card-head">
+                  <h6>
+                    user name or email!
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <p>
+                    some data from the data base!!!!!!
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="collapsible-body"><span>Lorem ipsum dolor sit amet.</span></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div> -->
+
+
+  <script>
+    //##############################################################################################
+    //                                  DISPLAY USER's POSTS
+    //##############################################################################################
+    function displayPosts() {
+      selEle = document.getElementById("postsarea");
+      selEle.innerHTML = "";
+      console.log("email:", userEmail);
+      postRef = db.collection("posts");
+      postRef.where("user", "==", userEmail).where("display", "==", "1").orderBy("time", "desc").get().then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          temp = document.createElement('div');
+          temp.innerHTML = `
+            
+              <div class="card light-blue lighten-2 white-text">
+                <div class="card-head">
+                  <h6>
+                    `+ userEmail + `
+                  </h6>
+                  <a onclick="deletepost('`+ doc.id + `')" class="btn-floating btn-small waves-effect waves-light red" style="float:right;margin-top:0px;"><i class="material-icons">delete</i></a>
+                </div>
+                <div class="card-body">
+                  <p>
+                    `+ doc.data().post + `
+                  </p>
+                </div>
+              </div>
+            </div>
+           
+            `;
+          selEle.appendChild(temp);
+          console.log(doc.id, " => ", doc.data().post);
+        });
+      });
+    }
+    displayPosts();
+
+    //#################################################################################################
+    //                                      DELETE POST
+    //#################################################################################################
+    function deletepost(id) {
+
+        console.log(selEle);
+        // Add a new document in collection "cities"
+        db.collection("posts").doc(id).set({
+          display: 0
+        })
+          .then(function () {
+            console.log("Document successfully written!");
+            alert("deleted!");
+            window.location = "postpage.html"
+          })
+          .catch(function (error) {
+            console.error("Error writing document: ", error);
+          });
+      }
+  </script>
+
+</body>
+
+</html>

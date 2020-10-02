@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>POST</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Jquery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+
+    <!-- compiled and minified JS (materialize) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.sidenav').sidenav();
+        });
+    </script>
+    <!-- manual stylesheet -->
+<link rel="stylesheet" href="./style/mainstyle.css">
+     <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-app.js"></script>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.15.1/firebase-analytics.js"></script>
+
+
+  <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyBtHxCNZIAHmUVz6ssjT-TmpHdavV8079E",
+      authDomain: "raiseyourvoice-d0195.firebaseapp.com",
+      databaseURL: "https://raiseyourvoice-d0195.firebaseio.com",
+      projectId: "raiseyourvoice-d0195",
+      storageBucket: "raiseyourvoice-d0195.appspot.com",
+      messagingSenderId: "928499525808",
+      appId: "1:928499525808:web:8a56ff6021f440d48f3375",
+      measurementId: "G-ZYWLZWDYKR"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    //update firestore settings
+    // db.settings({timestampsInSnapshots: true});
+    firebase.analytics();
+  </script>
+
+
+</head>
+
+<body>
+
+
+
+<nav style="position: fixed; z-index: 999;">
+    <div class="nav-wrapper light-blue lighten-2">
+        <a href="#!" class="brand-logo">Post</a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="#">Home</a></li>
+            <li><a href="postpage.html">Post</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="sidenav" id="mobile-demo">
+    <li><a href="#">Home</a></li>
+    <li><a href="postpage.html">Post</a></li>
+</ul>
+
+<main>
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m8 l10 push-m2 push-l1" id="postsarea" style="min-height: 200px; margin-top: 100px;">
+                <!-- ######################################
+                            PoSTS FORM JS
+                ########################################### -->
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<footer class="light-blue lighten-2 z-depth-2" style="width: 100%; min-height: 80px; padding:20px;">
+<div class="container center white-text">
+    Developed By - Mayank
+</div>
+</footer>
+
+<script>
+    
+    postRef = db.collection("posts").where('display', '==', '1').get()
+    postRef.then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            // doc.data() is never undefined for query doc snapshots
+            selEle = document.getElementById("postsarea");
+            temp = `
+            <div class="card light-blue lighten-2 white-text">
+                <div class="card-head">
+                  <h6>
+                    `+ doc.data().user + `
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <p>
+                    `+ doc.data().post + `
+                  </p>
+                </div>
+              </div>
+            </div>
+            `;
+            selEle.innerHTML += temp;
+            console.log(doc.id, " => ", doc.data().post);
+        });
+    });
+
+</script>
+
+
+
+
+
+
+
+</body>
+</html>

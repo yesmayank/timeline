@@ -65,4 +65,4 @@ node_modules/
 .env
 ./functions/*
 .JSON
-
+functions/
